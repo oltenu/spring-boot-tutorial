@@ -1,6 +1,7 @@
 package events.controller;
 
 import events.data.EventData;
+import events.model.EnumType;
 import events.model.Event;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,6 +24,8 @@ public class EventsController {
     @GetMapping("create")
     public String renderCreateEventForm(Model model){
         model.addAttribute("title", "Create Event");
+        model.addAttribute(new Event());
+        model.addAttribute("types", EnumType.values());
 
         return "events/create";
     }

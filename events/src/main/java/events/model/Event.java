@@ -19,15 +19,20 @@ public class Event {
     @NotBlank
     @Email(message = "Invalid email. Try again.")
     private String contactEmail;
-    public Event(String name, String description, String contactEmail) {
+
+    private EnumType type;
+    public Event(String name, String description, String contactEmail, EnumType type) {
+        this();
         this.name = name;
         this.description = description;
-        this.id = nextId;
         this.contactEmail = contactEmail;
-        nextId++;
+        this.type = type;
     }
 
-    public Event(){}
+    public Event(){
+        this.id = nextId;
+        nextId++;
+    }
 
     public String getName() {
         return name;
@@ -55,6 +60,14 @@ public class Event {
 
     public void setContactEmail(String contactEmail) {
         this.contactEmail = contactEmail;
+    }
+
+    public EnumType getType() {
+        return type;
+    }
+
+    public void setType(EnumType type) {
+        this.type = type;
     }
 
     @Override
