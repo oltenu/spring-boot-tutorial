@@ -4,7 +4,10 @@ import events.data.EventData;
 import events.model.Event;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping("events")
@@ -25,7 +28,14 @@ public class EventsController {
     }
 
     @PostMapping("create")
-    public String processCreateEventForm(@ModelAttribute Event newEvent){
+    public String processCreateEventForm(@ModelAttribute @Valid Event newEvent,
+                                         Errors errors, Model model){
+        if(errors.hasErrors()){
+            model.addAttribute("title", "Create Event");
+
+            return "events/create";
+        }
+
         EventData.add(newEvent);
 
         return "redirect:/events";
