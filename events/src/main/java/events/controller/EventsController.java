@@ -1,22 +1,27 @@
 package events.controller;
 
 import events.data.EventData;
+import events.data.EventRepository;
 import events.model.EnumType;
 import events.model.Event;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-
 @Controller
 @RequestMapping("events")
 public class EventsController {
+
+    @Autowired
+    private EventRepository eventRepository;
+
     @GetMapping
     public String displayAllEvents(Model model){
         model.addAttribute("title", "All Events");
-        model.addAttribute("events", EventData.getAll());
+        model.addAttribute("events", eventRepository.findAll());
 
         return "events/index";
     }
