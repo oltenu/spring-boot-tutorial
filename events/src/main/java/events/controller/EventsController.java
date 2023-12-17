@@ -2,8 +2,11 @@ package events.controller;
 
 import events.data.EventCategoryRepository;
 import events.data.EventRepository;
+import events.data.TagRepository;
 import events.model.Event;
 import events.model.EventCategory;
+import events.model.Tag;
+import events.model.dto.EventTagDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,6 +25,9 @@ public class EventsController {
 
     @Autowired
     private EventCategoryRepository eventCategoryRepository;
+
+    @Autowired
+    private TagRepository tagRepository;
 
     @GetMapping
     public String displayAllEvents(@RequestParam(required = false) Integer categoryId, Model model) {
@@ -43,18 +49,18 @@ public class EventsController {
     }
 
     @GetMapping("details")
-    public String displayEvent(@RequestParam(required = false) Integer eventId, Model model){
-        if(eventId == null){
+    public String displayEvent(@RequestParam(required = false) Integer eventId, Model model) {
+        if (eventId == null) {
             return "events/index";
-        }else{
+        } else {
             Optional<Event> eventOptional = eventRepository.findById(eventId);
 
-            if(eventOptional.isPresent()){
+            if (eventOptional.isPresent()) {
                 Event event = eventOptional.get();
 
                 model.addAttribute("title", "Event: " + event.getName());
                 model.addAttribute("events", event);
-            }else{
+            } else {
                 return "events/index";
             }
         }
@@ -102,5 +108,37 @@ public class EventsController {
         }
 
         return "redirect:/events";
+    }
+
+    @GetMapping("add-tag")
+    public String displayAddTagForm(@RequestParam Integer eventId, Model model) {
+        Optional<Event> eventOptional = eventRepository.findById(eventId);
+        if (eventOptional.isPresent()) {
+            Event event = eventOptional.get();
+            model.addAttribute("title", "Add Tag to: " + event.getName());
+            model.addAttribute("tags", tagRepository.findAll());
+            EventTagDTO eventTagDTO = new EventTagDTO();
+            eventTagDTO.setEvent(event);
+            model.addAttribute("eventTag", eventTagDTO);
+
+            return "events/add-tag";
+        }
+
+        return "events/add-tag";
+    }
+
+    @PostMapping("add-tag")
+    public String processAddTagForm(@ModelAttribute @Valid EventTagDTO eventTagDTO, Errors errors, Model model) {
+        if (!errors.hasErrors()) {
+            Event event = eventTagDTO.getEvent();
+            Tag tag = eventTagDTO.getTag();
+            if (event.getTags().contains(tag)) {
+                event.addTag(tag);
+                eventRepository.save(event);
+            }
+
+            return "redirect:/events";
+        }
+        return "events/add-tag";
     }
 }
