@@ -1,6 +1,5 @@
 package events.controller;
 
-import events.data.EventData;
 import events.data.EventRepository;
 import events.model.EnumType;
 import events.model.Event;
@@ -44,7 +43,7 @@ public class EventsController {
             return "events/create";
         }
 
-        EventData.add(newEvent);
+        eventRepository.save(newEvent);
 
         return "redirect:/events";
     }
@@ -52,7 +51,7 @@ public class EventsController {
     @GetMapping("delete")
     public String displayDeleteEventForm(Model model){
         model.addAttribute("title", "Delete events");
-        model.addAttribute("events", EventData.getAll());
+        model.addAttribute("events", eventRepository.findAll());
 
         return "events/delete";
     }
@@ -61,7 +60,7 @@ public class EventsController {
     public String processDeleteEventsForm(@RequestParam(required = false) int[] eventIds){
         if(eventIds != null){
             for(int id : eventIds){
-                EventData.delete(id);
+                eventRepository.deleteById(id);
             }
         }
 
