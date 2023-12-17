@@ -10,16 +10,16 @@
         <th>Id</th>
         <th>Name</th>
         <th>Description</th>
-        <th>Type</th>
+        <th>Category</th>
         <th>Contact Email</th>
     </tr>
     </thead>
     <tr th:each="event : ${events}">
         <td th:text="${event.id}"></td>
         <td th:text="${event.name}"></td>
-        <td th:text="${event.description}"></td>
-        <td th:text="${event.type.displayName}"></td>
-        <td th:text="${event.contactEmail}"></td>
+        <td th:text="${event.eventDetails.description}"></td>
+        <td th:text="${event.category.name}"></td>
+        <td th:text="${event.eventDetails.contactEmail}"></td>
     </tr>
 </table>
 </body>
